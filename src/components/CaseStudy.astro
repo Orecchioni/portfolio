@@ -77,19 +77,29 @@ const lenses = [
 				<button type="button" data-mode-btn="mobile" aria-pressed="false">Mobile</button>
 			</div>
 
-			<div class="stack titles" aria-live="polite">
-				{
-					data.slides.map((s, i) => (
-						<div class:list={['ti', { on: i === 0 }]} data-s={i} data-path={s.path}>
-							<h4>
-								<span>{s.label}</span>
-							</h4>
-							<a class="open" href={`${data.origin}${s.path}`} target="_blank" rel="noopener noreferrer">
-								Apri la pagina <span aria-hidden="true">↗</span>
-							</a>
-						</div>
-					))
-				}
+			<div class="titlerow">
+				<div class="stack titles" aria-live="polite">
+					{
+						data.slides.map((s, i) => (
+							<div class:list={['ti', { on: i === 0 }]} data-s={i} data-path={s.path}>
+								<h4>
+									<span>{s.label}</span>
+								</h4>
+							</div>
+						))
+					}
+				</div>
+				<div class="stack opens">
+					{
+						data.slides.map((s, i) => (
+							<div class:list={['op', { on: i === 0 }]} data-s={i}>
+								<a class="open" href={`${data.origin}${s.path}`} target="_blank" rel="noopener noreferrer">
+									Apri la pagina <span aria-hidden="true">↗</span>
+								</a>
+							</div>
+						))
+					}
+				</div>
 			</div>
 
 			<div class="lens" role="group" aria-label="Chiave di lettura">
@@ -184,12 +194,7 @@ const lenses = [
 		justify-content: center;
 		padding: 4px 0;
 		touch-action: pan-y;
-		--ph: clamp(200px, calc(100svh - 600px), 400px);
-	}
-	@media (max-width: 380px) {
-		.view {
-			--ph: clamp(170px, calc(100svh - 600px), 400px);
-		}
+		--ph: clamp(140px, calc(100svh - 430px), 460px);
 	}
 	@media (min-width: 900px) {
 		.view {
@@ -411,15 +416,22 @@ const lenses = [
 			filter 0.55s ease 0.28s,
 			visibility 0s linear 0s;
 	}
-	.titles {
-		margin-bottom: 12px;
-	}
-	.ti {
+	.titlerow {
 		display: flex;
-		flex-wrap: wrap;
 		align-items: baseline;
 		justify-content: space-between;
 		gap: 4px 16px;
+		margin-bottom: 12px;
+	}
+	.titles {
+		min-width: 0;
+	}
+	.opens {
+		flex: none;
+	}
+	.op {
+		display: flex;
+		justify-content: flex-end;
 	}
 	.ti h4 {
 		margin: 0;
@@ -581,6 +593,166 @@ const lenses = [
 		box-shadow: none;
 	}
 
+	/* Mobile: tutta la scheda in una schermata.
+	   stage, notes e titlerow si "aprono" e i pezzi si ridispongono in una griglia unica */
+	@media (max-width: 899px) {
+		.case {
+			display: grid;
+			grid-template-columns: minmax(0, 1fr) auto;
+			grid-template-areas:
+				'seg open'
+				'view view'
+				'head pager'
+				'title pager'
+				'lens lens'
+				'text text';
+			column-gap: 12px;
+		}
+		.stage,
+		.notes,
+		.titlerow {
+			display: contents;
+		}
+		.seg {
+			grid-area: seg;
+			margin: 0;
+		}
+		.seg button {
+			font-size: 0.8rem;
+		}
+		.opens {
+			grid-area: open;
+			justify-self: end;
+			align-self: center;
+		}
+		.view {
+			grid-area: view;
+			margin: 2px 0 10px;
+		}
+		/* la cornice desktop segue l'altezza disponibile come il telefono */
+		.browser {
+			width: min(100%, calc((var(--ph) - 32px) * 1.6));
+		}
+		.head {
+			grid-area: head;
+			align-self: end;
+			margin: 0;
+			min-width: 0;
+		}
+		.head h3 {
+			font-size: 0.85rem;
+			font-weight: 500;
+			letter-spacing: 0;
+			color: var(--muted);
+			white-space: nowrap;
+			overflow: hidden;
+			text-overflow: ellipsis;
+		}
+		.titles {
+			grid-area: title;
+			align-self: start;
+			margin: 0;
+			min-width: 0;
+		}
+		.ti h4 {
+			font-size: 1.45rem;
+			line-height: 1.2;
+		}
+		/* frecce compatte: un unico comando a due metà, non due cerchi */
+		.pager {
+			grid-area: pager;
+			align-self: center;
+			justify-self: end;
+			margin: 0;
+			gap: 0;
+			overflow: hidden;
+			border: 1px solid #5ee7ff;
+			border-radius: 10px;
+			box-shadow:
+				0 0 12px rgba(94, 231, 255, 0.3),
+				inset 0 0 8px rgba(94, 231, 255, 0.08);
+		}
+		.count {
+			display: none;
+		}
+		.arrow {
+			position: relative;
+			width: 38px;
+			height: 34px;
+			border: 0;
+			border-radius: 0;
+			box-shadow: none;
+			font-size: 0.95rem;
+		}
+		.arrow::after {
+			content: '';
+			position: absolute;
+			inset: -5px 0;
+		}
+		.arrow[data-next] {
+			box-shadow: none;
+		}
+		.arrow:hover:not(:disabled) {
+			transform: none;
+			box-shadow: none;
+			background: rgba(94, 231, 255, 0.16);
+		}
+		.arrow[data-next]:hover:not(:disabled) {
+			background: linear-gradient(135deg, #9d8bff, #5ee7ff);
+		}
+		.lens {
+			grid-area: lens;
+			gap: 20px;
+			margin: 4px 0 10px;
+		}
+		.lens button {
+			font-size: 0.95rem;
+		}
+		.texts {
+			grid-area: text;
+		}
+		.t p {
+			font-size: 0.93rem;
+			line-height: 1.55;
+		}
+		.t .stackline {
+			margin-top: 8px;
+			font-size: 0.78rem;
+		}
+	}
+	/* schermi bassi (telefoni piccoli, barre del browser aperte) */
+	@media (max-width: 899px) and (max-height: 680px) {
+		.view {
+			--ph: clamp(120px, calc(100svh - 362px), 460px);
+			margin: 0 0 8px;
+		}
+		.ti h4 {
+			font-size: 1.2rem;
+		}
+		.lens {
+			margin: 0 0 8px;
+		}
+		.lens button {
+			font-size: 0.88rem;
+		}
+		.t p {
+			font-size: 0.86rem;
+			line-height: 1.5;
+		}
+		.t .stackline {
+			display: none;
+		}
+	}
+	@media (max-width: 400px) {
+		.arrow {
+			width: 34px;
+			height: 32px;
+		}
+		.lens {
+			gap: 16px;
+		}
+	}
+
 	@media (prefers-reduced-motion: reduce) {
 		.case::before {
 			animation: none;
@@ -614,6 +786,7 @@ const lenses = [
 		const host = root.dataset.host ?? '';
 		const screens = [...root.querySelectorAll<HTMLElement>('.screen')];
 		const titles = [...root.querySelectorAll<HTMLElement>('.ti')];
+		const opens = [...root.querySelectorAll<HTMLElement>('.op')];
 		const texts = [...root.querySelectorAll<HTMLElement>('.t')];
 		const url = root.querySelector<HTMLElement>('[data-url]');
 		const count = root.querySelector<HTMLElement>('[data-count]')!;
@@ -643,6 +816,7 @@ const lenses = [
 
 		const syncText = () => {
 			titles.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx));
+			opens.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx));
 			texts.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx && t.dataset.l === lens));
 		};
 
