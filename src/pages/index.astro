@@ -147,6 +147,11 @@ const certs = [
 					<a href="#metodo">Metodo</a>
 					<a href="#competenze">Competenze</a>
 					<a href="#esperienza">Esperienza</a>
+					<div class="menu-foot">
+						<span>Contatti</span>
+						<a href={`mailto:${email}`}>{email}</a>
+						<a href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+					</div>
 				</nav>
 				<div class="actions">
 					<a class="neon" href="#contatti">Contattami</a>
@@ -352,6 +357,7 @@ const certs = [
 			const burger = document.querySelector<HTMLButtonElement>('.burger');
 			const setMenu = (open: boolean) => {
 				header?.classList.toggle('open', open);
+				document.documentElement.classList.toggle('menu-open', open);
 				burger?.setAttribute('aria-expanded', String(open));
 				burger?.setAttribute('aria-label', open ? 'Chiudi il menu' : 'Apri il menu');
 			};
@@ -621,32 +627,142 @@ const certs = [
 			top: 64px;
 			left: 0;
 			right: 0;
+			height: calc(100dvh - 64px);
 			margin: 0;
 			flex-direction: column;
 			align-items: stretch;
+			justify-content: flex-start;
 			gap: 0;
-			padding: 8px var(--gutter) 16px;
-			background: #0a0c12;
-			border-bottom: 1px solid var(--line);
-			box-shadow: 0 30px 40px -20px rgba(0, 0, 0, 0.8);
+			padding: 20px var(--gutter) 28px;
+			overflow-y: auto;
+			counter-reset: m;
+			background:
+				radial-gradient(70% 38% at 100% 0%, rgba(124, 108, 255, 0.38), transparent 70%),
+				radial-gradient(70% 34% at 0% 100%, rgba(34, 211, 238, 0.26), transparent 70%),
+				radial-gradient(40% 24% at 70% 62%, rgba(255, 79, 216, 0.14), transparent 70%),
+				#0a0c12;
 			opacity: 0;
 			visibility: hidden;
-			transform: translateY(-8px);
-			transition: opacity 0.2s, transform 0.2s, visibility 0.2s;
+			transform: translateY(-10px);
+			transition: opacity 0.3s, transform 0.3s, visibility 0.3s;
+		}
+		/* linea di luce che corre sotto l'header, come sul desktop */
+		nav::before {
+			content: '';
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			height: 1px;
+			background: linear-gradient(90deg, transparent, #5ee7ff, #fff, #9d7bff, transparent) no-repeat -40% 0 / 40% 100%;
+			filter: drop-shadow(0 0 6px #5ee7ff);
 		}
 		.nav.open nav {
 			opacity: 1;
 			visibility: visible;
 			transform: none;
 		}
-		nav a {
-			padding: 14px 4px;
-			font-size: 1.05rem;
-			color: var(--text);
-			border-bottom: 1px solid var(--line);
+		.nav.open nav::before {
+			animation: menu-line 2.4s ease-in-out infinite;
 		}
-		nav a:last-child {
-			border-bottom: 0;
+		@keyframes menu-line {
+			to {
+				background-position: 140% 0;
+			}
+		}
+		nav > a {
+			counter-increment: m;
+			display: flex;
+			align-items: baseline;
+			gap: 16px;
+			padding: 20px 0;
+			font-family: var(--font-display);
+			font-size: clamp(1.9rem, 9.5vw, 2.5rem);
+			font-weight: 600;
+			letter-spacing: -0.02em;
+			line-height: 1.1;
+			color: #fff;
+			border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+			opacity: 0;
+			transform: translateX(-16px);
+			transition:
+				opacity 0.45s,
+				transform 0.45s,
+				color 0.2s,
+				text-shadow 0.2s,
+				padding-left 0.2s;
+		}
+		nav > a::before {
+			content: '0' counter(m);
+			font-family: 'Inter Variable', system-ui, sans-serif;
+			font-size: 0.72rem;
+			font-weight: 600;
+			letter-spacing: 0.14em;
+			color: #5ee7ff;
+			text-shadow: 0 0 8px rgba(94, 231, 255, 0.8);
+		}
+		nav > a::after {
+			content: '→';
+			margin-left: auto;
+			font-size: 1.2rem;
+			color: rgba(255, 255, 255, 0.35);
+			transition: transform 0.2s, color 0.2s;
+		}
+		.nav.open nav > a {
+			opacity: 1;
+			transform: none;
+		}
+		.nav.open nav > a:nth-child(1) {
+			transition-delay: 0.08s, 0.08s, 0s, 0s, 0s;
+		}
+		.nav.open nav > a:nth-child(2) {
+			transition-delay: 0.16s, 0.16s, 0s, 0s, 0s;
+		}
+		.nav.open nav > a:nth-child(3) {
+			transition-delay: 0.24s, 0.24s, 0s, 0s, 0s;
+		}
+		.nav.open nav > a:nth-child(4) {
+			transition-delay: 0.32s, 0.32s, 0s, 0s, 0s;
+		}
+		nav > a:active {
+			color: #5ee7ff;
+			padding-left: 8px;
+			text-shadow:
+				0 0 8px rgba(94, 231, 255, 0.9),
+				0 0 26px rgba(157, 123, 255, 0.7);
+		}
+		nav > a:active::after {
+			transform: translateX(4px);
+			color: #5ee7ff;
+		}
+		.menu-foot {
+			margin-top: auto;
+			padding-top: 32px;
+			display: flex;
+			flex-direction: column;
+			gap: 10px;
+			opacity: 0;
+			transition: opacity 0.5s 0.45s;
+		}
+		.nav.open .menu-foot {
+			opacity: 1;
+		}
+		.menu-foot span {
+			font-size: 0.72rem;
+			font-weight: 600;
+			letter-spacing: 0.14em;
+			text-transform: uppercase;
+			color: #5ee7ff;
+		}
+		.menu-foot a {
+			font-size: 1rem;
+			color: #fff;
+			overflow-wrap: anywhere;
+		}
+	}
+	@media (min-width: 761px) {
+		.menu-foot {
+			display: none;
 		}
 	}
 	@media (prefers-reduced-motion: reduce) {

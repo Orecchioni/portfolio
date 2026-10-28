@@ -21,6 +21,10 @@
 	box-sizing: border-box;
 }
 
+html.menu-open {
+	overflow: hidden;
+}
+
 html {
 	scroll-behavior: smooth;
 	scroll-padding-top: 76px;
