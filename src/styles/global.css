@@ -1,0 +1,142 @@
+:root {
+	--bg: #0a0c12;
+	--bg-2: #11141d;
+	--card: #141824;
+	--line: #232838;
+	--text: #eef0f6;
+	--muted: #9aa1b5;
+	--accent: #7c6cff;
+	--accent-2: #22d3ee;
+	--grad: linear-gradient(120deg, var(--accent), var(--accent-2));
+	--radius: 18px;
+	--gutter: clamp(16px, 5vw, 40px);
+	--max: 1120px;
+	color-scheme: dark;
+}
+
+*,
+*::before,
+*::after {
+	box-sizing: border-box;
+}
+
+html {
+	scroll-behavior: smooth;
+	scroll-padding-top: 76px;
+}
+
+body {
+	margin: 0;
+	background: var(--bg);
+	color: var(--text);
+	font-family: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+	line-height: 1.6;
+	-webkit-font-smoothing: antialiased;
+	overflow-x: hidden;
+}
+
+img {
+	max-width: 100%;
+	height: auto;
+	display: block;
+}
+
+a {
+	color: inherit;
+}
+
+.wrap {
+	width: 100%;
+	max-width: var(--max);
+	margin-inline: auto;
+	padding-inline: var(--gutter);
+}
+
+section {
+	padding-block: clamp(56px, 10vw, 112px);
+}
+
+.eyebrow {
+	font-size: 0.78rem;
+	letter-spacing: 0.14em;
+	text-transform: uppercase;
+	color: var(--accent-2);
+	font-weight: 600;
+	margin: 0 0 12px;
+}
+
+h1,
+h2,
+h3 {
+	line-height: 1.12;
+	margin: 0;
+	letter-spacing: -0.02em;
+}
+
+h2 {
+	font-size: clamp(1.8rem, 5vw, 2.8rem);
+	margin-bottom: 16px;
+}
+
+.lead {
+	color: var(--muted);
+	font-size: clamp(1rem, 2.4vw, 1.2rem);
+	max-width: 62ch;
+	margin: 0;
+}
+
+.grad-text {
+	background: var(--grad);
+	-webkit-background-clip: text;
+	background-clip: text;
+	color: transparent;
+}
+
+.btn {
+	display: inline-flex;
+	align-items: center;
+	justify-content: center;
+	gap: 8px;
+	padding: 14px 22px;
+	border-radius: 999px;
+	font-weight: 600;
+	text-decoration: none;
+	border: 1px solid var(--line);
+	background: var(--card);
+	transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+	min-height: 48px;
+}
+
+.btn:hover {
+	transform: translateY(-2px);
+	border-color: var(--accent);
+}
+
+.btn.primary {
+	background: var(--grad);
+	color: #080a10;
+	border: 0;
+	box-shadow: 0 10px 30px -10px rgba(124, 108, 255, 0.6);
+}
+
+.reveal {
+	opacity: 0;
+	transform: translateY(24px);
+	transition: opacity 0.7s ease, transform 0.7s ease;
+}
+
+.reveal.in {
+	opacity: 1;
+	transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+	html {
+		scroll-behavior: auto;
+	}
+	.reveal {
+		opacity: 1;
+		transform: none;
+		transition: none;
+	}
+}

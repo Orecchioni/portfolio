@@ -1,0 +1,738 @@
+---
+import { Image } from 'astro:assets';
+import '../styles/global.css';
+
+import enjoyDesktop from '../assets/shots/enjoyclub-desktop.png';
+import enjoyMobile from '../assets/shots/enjoyclub-mobile.png';
+import recompDesktop from '../assets/shots/recomp360-desktop.png';
+import recompMobile from '../assets/shots/recomp360-mobile.png';
+import bodyDesktop from '../assets/shots/bodyenergie-desktop.png';
+import bodyMobile from '../assets/shots/bodyenergie-mobile.png';
+import kalanDesktop from '../assets/shots/kalan-desktop.png';
+import kalanMobile from '../assets/shots/kalan-mobile.png';
+import passionDesktop from '../assets/shots/passionfitness-desktop.png';
+import passionMobile from '../assets/shots/passionfitness-mobile.png';
+
+const email = 'michele.orecchioni@outlook.com';
+const linkedin = 'https://linkedin.com/in/micheleorecchioni';
+
+const stats = [
+	{ n: '10', l: 'siti per centri sportivi, seguiti da zero' },
+	{ n: '~30', l: 'ticket gestiti ogni mese' },
+	{ n: '800–4.000', l: 'soci per struttura supportata' },
+	{ n: '30k€', l: 'budget mensile ads presidiato come referente' },
+];
+
+const sites = [
+	{
+		name: 'Passion Fitness',
+		url: 'https://www.passionfitness.it/',
+		desc: 'Palestra a Roma (Tuscolana). Sito statico collegato al CRM interno del club, con un sistema di candidature spontanee costruito da zero al posto di un servizio di moduli esterno.',
+		points: [
+			'Pagina “Lavora con noi”: modulo accessibile con validazione, anti-spam e invio del CV direttamente al CRM.',
+			'Notifica interna al responsabile e email di conferma al candidato, con grafica coerente al brand.',
+			'Informativa privacy e cookie aggiornate: nuova finalità, conservazione dei CV, responsabili esterni.',
+		],
+		tags: ['Astro', 'MDX', 'Vercel', 'Supabase', 'SendGrid'],
+		desktop: passionDesktop,
+		mobile: passionMobile,
+	},
+	{
+		name: 'Recomp360',
+		url: 'https://recomp360.it/',
+		desc: 'Sito di conversione per una palestra di personal training a Roma Est: l’obiettivo è trasformare le visite in prove a pagamento (Guest Pass da 17 €) e in contatti qualificati.',
+		points: [
+			'Migrazione da HTML statico con CMS ad Astro, con componenti riutilizzabili e base SEO uniforme.',
+			'Modale a 4 step per il Guest Pass con pagamento Stripe e verifica lato server prima di notificare il sistema interno.',
+			'Form contatti con logica condizionale (già iscritto o nuovo) e automazioni via webhook su n8n.',
+			'Tracciamento con Google Tag Manager e Consent Mode v2, dati strutturati Schema.org e header di sicurezza.',
+		],
+		tags: ['Astro', 'Netlify Functions', 'Stripe', 'n8n', 'GTM', 'CookieYes'],
+		desktop: recompDesktop,
+		mobile: recompMobile,
+	},
+	{
+		name: 'Kalan',
+		url: 'https://kalancentro.it/',
+		desc: 'Il primo centro di benessere integrale in Italia.',
+		desktop: kalanDesktop,
+		mobile: kalanMobile,
+	},
+	{
+		name: 'Enjoy Club',
+		url: 'https://enjoyclub.eu/',
+		desc: 'Wellness community con due sedi in Brianza (Meda e Camuzzago).',
+		desktop: enjoyDesktop,
+		mobile: enjoyMobile,
+	},
+	{
+		name: 'Body Energie',
+		url: 'https://www.bodyenergie.it/',
+		desc: 'Sito del centro, collegato ai punti di raccolta contatti.',
+		desktop: bodyDesktop,
+		mobile: bodyMobile,
+	},
+];
+
+const flow = [
+	{ t: 'Sito', d: 'Astro o WordPress + Elementor, scelti in base al cliente' },
+	{ t: 'Form e modal', d: 'Punti di conversione collegati al CRM' },
+	{ t: 'Perfect Gym', d: 'Contatti, soci, abbonamenti e rinnovi' },
+	{ t: 'Nurturing', d: 'Flussi automatici, newsletter, DEM, WhatsApp' },
+];
+
+const skills = [
+	{ t: 'Sviluppo web', i: ['Astro', 'WordPress', 'Elementor', 'Netlify', 'GitHub', 'SEO on-page', 'Claude Code'] },
+	{ t: 'Gestionali e CRM', i: ['Perfect Gym Manager', 'Salesforce', 'Ticket e troubleshooting', 'Formazione utenti'] },
+	{ t: 'Email e direct', i: ['Mailchimp', 'MailUp', 'Spoki (WhatsApp)', 'Newsletter e DEM'] },
+	{ t: 'Dati e acquisizione', i: ['GA4', 'Looker Studio', 'Excel', 'Meta Ads', 'Google Ads', 'Lead nurturing'] },
+];
+
+const jobs = [
+	{
+		when: 'ott 2023 – oggi',
+		role: 'Web Application Specialist',
+		org: 'Ready2Digital',
+		txt: 'Siti per centri sportivi, supporto applicativo su Perfect Gym Manager, email marketing e CRM.',
+	},
+	{
+		when: 'mar 2023 – set 2023',
+		role: 'Digital Marketing Specialist (stage)',
+		org: 'Hurry!',
+		txt: 'Email marketing, lead management su Salesforce, coordinamento dell’agenzia ads.',
+	},
+	{
+		when: '2021 – 2024',
+		role: 'Social Media Manager (freelance)',
+		org: 'Musica e discografia',
+		txt: 'Piano di comunicazione, contenuti e Facebook Ads per due realtà del settore.',
+	},
+];
+
+const certs = [
+	'Make Basics · 2026',
+	'Postman API Fundamentals · 2025',
+	'Google Ads & Measurement · 2024',
+	'Google Analytics avanzato · 2024',
+	'Google Ads Search · 2023',
+	'SEO Certified, HubSpot · 2023',
+	'Inbound Certified, HubSpot · 2022',
+];
+---
+
+<!doctype html>
+<html lang="it">
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width, initial-scale=1" />
+		<meta name="theme-color" content="#0a0c12" />
+		<link rel="icon" type="image/svg+xml" href={`${import.meta.env.BASE_URL.replace(/\/$/, '')}/favicon.svg`} />
+		<title>Michele Orecchioni · Marketing Technologist</title>
+		<meta
+			name="description"
+			content="Portfolio di Michele Orecchioni: siti web, gestionali e CRM, email marketing per centri sportivi."
+		/>
+		<meta property="og:title" content="Michele Orecchioni · Marketing Technologist" />
+		<meta property="og:description" content="Dove il sito di un'azienda incontra il sistema che la fa funzionare." />
+		<meta property="og:type" content="website" />
+	</head>
+	<body>
+		<header class="nav">
+			<div class="wrap nav-in">
+				<a class="brand" href="#top">MO<span class="grad-text">.</span></a>
+				<nav aria-label="Principale">
+					<a href="#progetti">Progetti</a>
+					<a href="#metodo">Metodo</a>
+					<a href="#esperienza">Esperienza</a>
+					<a class="pill" href="#contatti">Contattami</a>
+				</nav>
+			</div>
+		</header>
+
+		<main id="top">
+			<section class="hero">
+				<div class="glow" aria-hidden="true"></div>
+				<div class="wrap">
+					<p class="eyebrow reveal">Marketing Technologist · Roma</p>
+					<h1 class="reveal">
+						Dove il sito incontra<br />
+						<span class="grad-text">il sistema che fa funzionare l’azienda.</span>
+					</h1>
+					<p class="lead reveal">
+						Dal 2023 seguo centri sportivi italiani: costruisco i loro siti, li collego ai punti di raccolta contatti e presidio il
+						gestionale con cui gestiscono soci, abbonamenti e rinnovi.
+					</p>
+					<div class="cta reveal">
+						<a class="btn primary" href="#progetti">Vedi i progetti</a>
+						<a class="btn" href={`mailto:${email}`}>Scrivimi</a>
+					</div>
+					<ul class="stats">
+						{
+							stats.map((s) => (
+								<li class="reveal">
+									<strong class="grad-text">{s.n}</strong>
+									<span>{s.l}</span>
+								</li>
+							))
+						}
+					</ul>
+				</div>
+			</section>
+
+			<section id="progetti">
+				<div class="wrap">
+					<p class="eyebrow">Progetti</p>
+					<h2>Siti realizzati</h2>
+					<p class="lead">Struttura, contenuti, sviluppo, pubblicazione e manutenzione, in autonomia. Clicca per aprire il sito reale.</p>
+
+					<div class="sites">
+						{
+							sites.map((s) => {
+								const inner = (
+									<>
+										<div class="shot">
+											{s.desktop ? (
+												<>
+													<Image class="d" src={s.desktop} alt={`${s.name}, versione desktop`} widths={[640, 960]} sizes="(min-width: 760px) 520px, 90vw" loading="lazy" />
+													<Image class="m" src={s.mobile} alt={`${s.name}, versione mobile`} widths={[200, 320]} sizes="120px" loading="lazy" />
+												</>
+											) : (
+												<div class="soon">Anteprima in arrivo</div>
+											)}
+										</div>
+										<div class="meta">
+											<h3>
+												{s.name}
+												{s.url && <span aria-hidden="true">↗</span>}
+											</h3>
+											<p>{s.desc}</p>
+											{s.points && (
+												<ul class="points">
+													{s.points.map((p) => (
+														<li>{p}</li>
+													))}
+												</ul>
+											)}
+											{s.tags && (
+												<ul class="tags">
+													{s.tags.map((t) => (
+														<li>{t}</li>
+													))}
+												</ul>
+											)}
+										</div>
+									</>
+								);
+								return s.url ? (
+									<a class="site reveal" href={s.url} target="_blank" rel="noopener noreferrer">
+										{inner}
+									</a>
+								) : (
+									<div class="site reveal disabled">{inner}</div>
+								);
+							})
+						}
+					</div>
+				</div>
+			</section>
+
+			<section id="metodo" class="alt">
+				<div class="wrap">
+					<p class="eyebrow">Metodo</p>
+					<h2>Un contatto, dal sito al CRM</h2>
+					<p class="lead">
+						Non consegno solo un sito: collego ogni punto di conversione al gestionale, così il contatto raccolto finisce nel flusso
+						giusto senza passaggi a mano.
+					</p>
+					<ol class="flow">
+						{
+							flow.map((f, i) => (
+								<li class="reveal">
+									<span class="num">{i + 1}</span>
+									<h3>{f.t}</h3>
+									<p>{f.d}</p>
+								</li>
+							))
+						}
+					</ol>
+				</div>
+			</section>
+
+			<section id="newsletter">
+				<div class="wrap">
+					<p class="eyebrow">Email e direct marketing</p>
+					<h2>Newsletter, DEM e WhatsApp</h2>
+					<p class="lead">
+						Pianificazione e creazione di newsletter sui database soci dei centri, su Mailchimp, MailUp e sul provider integrato in
+						Perfect Gym, più campagne WhatsApp via Spoki e materiali grafici in Canva.
+					</p>
+					<div class="placeholder reveal">Esempi di newsletter in arrivo</div>
+				</div>
+			</section>
+
+			<section id="competenze" class="alt">
+				<div class="wrap">
+					<p class="eyebrow">Competenze</p>
+					<h2>Strumenti con cui lavoro</h2>
+					<div class="skills">
+						{
+							skills.map((g) => (
+								<div class="skill reveal">
+									<h3>{g.t}</h3>
+									<ul>
+										{g.i.map((x) => (
+											<li>{x}</li>
+										))}
+									</ul>
+								</div>
+							))
+						}
+					</div>
+				</div>
+			</section>
+
+			<section id="esperienza">
+				<div class="wrap">
+					<p class="eyebrow">Esperienza</p>
+					<h2>Percorso</h2>
+					<ol class="jobs">
+						{
+							jobs.map((j) => (
+								<li class="reveal">
+									<span class="when">{j.when}</span>
+									<div>
+										<h3>{j.role}</h3>
+										<p class="org">{j.org}</p>
+										<p>{j.txt}</p>
+									</div>
+								</li>
+							))
+						}
+					</ol>
+					<h3 class="sub">Certificazioni</h3>
+					<ul class="chips">
+						{certs.map((c) => <li>{c}</li>)}
+					</ul>
+				</div>
+			</section>
+
+			<section id="contatti" class="contact">
+				<div class="wrap">
+					<h2>Hai un sito da costruire o un gestionale da far funzionare?</h2>
+					<p class="lead">Scrivimi: di solito rispondo il giorno stesso.</p>
+					<div class="cta">
+						<a class="btn primary" href={`mailto:${email}`}>{email}</a>
+						<a class="btn" href={linkedin} target="_blank" rel="noopener noreferrer">LinkedIn ↗</a>
+					</div>
+				</div>
+			</section>
+		</main>
+
+		<footer>
+			<div class="wrap">© {new Date().getFullYear()} Michele Orecchioni · Roma</div>
+		</footer>
+
+		<script>
+			const els = document.querySelectorAll('.reveal');
+			if ('IntersectionObserver' in window) {
+				const io = new IntersectionObserver(
+					(entries) => {
+						for (const e of entries) {
+							if (e.isIntersecting) {
+								e.target.classList.add('in');
+								io.unobserve(e.target);
+							}
+						}
+					},
+					{ threshold: 0.12 },
+				);
+				els.forEach((el) => io.observe(el));
+			} else {
+				els.forEach((el) => el.classList.add('in'));
+			}
+		</script>
+	</body>
+</html>
+
+<style>
+	.nav {
+		position: sticky;
+		top: 0;
+		z-index: 10;
+		backdrop-filter: blur(14px);
+		background: rgba(10, 12, 18, 0.72);
+		border-bottom: 1px solid var(--line);
+	}
+	.nav-in {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		height: 64px;
+	}
+	.brand {
+		font-weight: 800;
+		font-size: 1.25rem;
+		text-decoration: none;
+		letter-spacing: -0.03em;
+	}
+	nav {
+		display: flex;
+		align-items: center;
+		gap: clamp(12px, 3vw, 28px);
+		font-size: 0.92rem;
+	}
+	nav a {
+		text-decoration: none;
+		color: var(--muted);
+	}
+	nav a:hover {
+		color: var(--text);
+	}
+	nav a.pill {
+		color: var(--text);
+		border: 1px solid var(--line);
+		padding: 8px 16px;
+		border-radius: 999px;
+	}
+	@media (max-width: 560px) {
+		nav a:not(.pill) {
+			display: none;
+		}
+	}
+
+	.hero {
+		position: relative;
+		overflow: hidden;
+		padding-top: clamp(64px, 12vw, 128px);
+	}
+	.glow {
+		position: absolute;
+		inset: -20% -10% auto auto;
+		width: 70vw;
+		max-width: 720px;
+		aspect-ratio: 1;
+		background: radial-gradient(circle, rgba(124, 108, 255, 0.35), rgba(34, 211, 238, 0.12) 45%, transparent 70%);
+		filter: blur(40px);
+		pointer-events: none;
+	}
+	.hero h1 {
+		font-size: clamp(2.2rem, 8vw, 4.6rem);
+		margin-bottom: 24px;
+		position: relative;
+	}
+	.hero .lead,
+	.hero .cta,
+	.hero .stats {
+		position: relative;
+	}
+	.cta {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 12px;
+		margin-top: 32px;
+	}
+	.stats {
+		list-style: none;
+		padding: 0;
+		margin: clamp(40px, 8vw, 72px) 0 0;
+		display: grid;
+		grid-template-columns: repeat(2, 1fr);
+		gap: 12px;
+	}
+	.stats li {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		padding: 18px;
+		display: flex;
+		flex-direction: column;
+		gap: 4px;
+	}
+	.stats strong {
+		font-size: clamp(1.5rem, 5vw, 2.2rem);
+		line-height: 1.1;
+	}
+	.stats span {
+		color: var(--muted);
+		font-size: 0.88rem;
+	}
+	@media (min-width: 820px) {
+		.stats {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+
+	.alt {
+		background: var(--bg-2);
+		border-block: 1px solid var(--line);
+	}
+
+	.sites {
+		display: grid;
+		gap: 20px;
+		margin-top: 40px;
+	}
+	@media (min-width: 760px) {
+		.sites {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	.site {
+		display: flex;
+		flex-direction: column;
+		text-decoration: none;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		overflow: hidden;
+		transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
+	}
+	a.site:hover {
+		transform: translateY(-4px);
+		border-color: var(--accent);
+		box-shadow: 0 20px 50px -20px rgba(124, 108, 255, 0.5);
+	}
+	.site.disabled {
+		opacity: 0.7;
+	}
+	.shot {
+		position: relative;
+		aspect-ratio: 16 / 10;
+		background: #05060a;
+		overflow: hidden;
+	}
+	.shot :global(.d) {
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+	.shot :global(.m) {
+		position: absolute;
+		right: 14px;
+		bottom: -18px;
+		width: 24%;
+		height: auto;
+		aspect-ratio: 390 / 844;
+		object-fit: cover;
+		object-position: top;
+		border: 3px solid #1b2030;
+		border-radius: 14px;
+		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
+	}
+	.soon,
+	.placeholder {
+		display: grid;
+		place-items: center;
+		color: var(--muted);
+		font-size: 0.95rem;
+	}
+	.soon {
+		height: 100%;
+		background: repeating-linear-gradient(45deg, #0d1018, #0d1018 12px, #11141d 12px, #11141d 24px);
+	}
+	.placeholder {
+		margin-top: 32px;
+		min-height: 180px;
+		border: 1px dashed var(--line);
+		border-radius: var(--radius);
+	}
+	.meta {
+		padding: 20px 20px 22px;
+	}
+	.meta h3 {
+		font-size: 1.2rem;
+		display: flex;
+		justify-content: space-between;
+	}
+	.meta p {
+		color: var(--muted);
+		margin: 8px 0 0;
+		font-size: 0.95rem;
+	}
+
+	.points {
+		margin: 14px 0 0;
+		padding-left: 18px;
+		color: var(--muted);
+		font-size: 0.9rem;
+	}
+	.points li {
+		margin-bottom: 6px;
+	}
+	.tags {
+		list-style: none;
+		padding: 0;
+		margin: 14px 0 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 6px;
+	}
+	.tags li {
+		font-size: 0.75rem;
+		padding: 4px 10px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		color: var(--accent-2);
+	}
+	.site {
+		height: 100%;
+	}
+	.site:has(.points) {
+		grid-column: 1 / -1;
+	}
+	@media (min-width: 760px) {
+		.site:has(.points) {
+			display: grid;
+			grid-template-columns: 1fr 1fr;
+		}
+		.site:has(.points) .shot {
+			aspect-ratio: auto;
+			min-height: 320px;
+		}
+	}
+
+	.flow {
+		list-style: none;
+		padding: 0;
+		margin: 40px 0 0;
+		display: grid;
+		gap: 14px;
+	}
+	@media (min-width: 820px) {
+		.flow {
+			grid-template-columns: repeat(4, 1fr);
+		}
+	}
+	.flow li {
+		position: relative;
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		padding: 22px;
+	}
+	.flow .num {
+		display: inline-grid;
+		place-items: center;
+		width: 32px;
+		height: 32px;
+		border-radius: 50%;
+		background: var(--grad);
+		color: #080a10;
+		font-weight: 700;
+		margin-bottom: 14px;
+	}
+	.flow h3 {
+		font-size: 1.1rem;
+	}
+	.flow p {
+		color: var(--muted);
+		font-size: 0.92rem;
+		margin: 6px 0 0;
+	}
+
+	.skills {
+		display: grid;
+		gap: 14px;
+		margin-top: 36px;
+	}
+	@media (min-width: 760px) {
+		.skills {
+			grid-template-columns: repeat(2, 1fr);
+		}
+	}
+	.skill {
+		background: var(--card);
+		border: 1px solid var(--line);
+		border-radius: var(--radius);
+		padding: 22px;
+	}
+	.skill h3 {
+		font-size: 1.05rem;
+		margin-bottom: 14px;
+	}
+	.skill ul,
+	.chips {
+		list-style: none;
+		padding: 0;
+		margin: 0;
+		display: flex;
+		flex-wrap: wrap;
+		gap: 8px;
+	}
+	.skill li,
+	.chips li {
+		font-size: 0.85rem;
+		padding: 6px 12px;
+		border: 1px solid var(--line);
+		border-radius: 999px;
+		color: var(--muted);
+		background: var(--bg);
+	}
+
+	.jobs {
+		list-style: none;
+		padding: 0;
+		margin: 36px 0 0;
+		border-left: 1px solid var(--line);
+	}
+	.jobs li {
+		position: relative;
+		padding: 0 0 36px 24px;
+		display: grid;
+		gap: 4px;
+	}
+	.jobs li::before {
+		content: '';
+		position: absolute;
+		left: -5px;
+		top: 6px;
+		width: 9px;
+		height: 9px;
+		border-radius: 50%;
+		background: var(--grad);
+	}
+	.when {
+		color: var(--accent-2);
+		font-size: 0.82rem;
+		font-weight: 600;
+	}
+	.jobs h3 {
+		font-size: 1.15rem;
+	}
+	.jobs p {
+		margin: 0;
+		color: var(--muted);
+	}
+	.jobs .org {
+		color: var(--text);
+		font-weight: 500;
+	}
+	.sub {
+		margin: 24px 0 16px;
+		font-size: 1.1rem;
+	}
+
+	.contact {
+		text-align: center;
+		background: radial-gradient(ellipse at 50% 120%, rgba(124, 108, 255, 0.25), transparent 60%), var(--bg);
+	}
+	.contact .lead {
+		margin-inline: auto;
+	}
+	.contact .cta {
+		justify-content: center;
+	}
+	.contact .btn {
+		max-width: 100%;
+		overflow-wrap: anywhere;
+	}
+
+	footer {
+		padding: 28px 0;
+		border-top: 1px solid var(--line);
+		color: var(--muted);
+		font-size: 0.85rem;
+		text-align: center;
+	}
+</style>
