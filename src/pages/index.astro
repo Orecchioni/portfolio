@@ -1,7 +1,10 @@
 ---
 import { Image } from 'astro:assets';
+import CaseStudy from '../components/CaseStudy.astro';
+import { passion } from '../data/passion';
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
+import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 
 import enjoyDesktop from '../assets/shots/enjoyclub-desktop.png';
@@ -12,8 +15,6 @@ import bodyDesktop from '../assets/shots/bodyenergie-desktop.png';
 import bodyMobile from '../assets/shots/bodyenergie-mobile.png';
 import kalanDesktop from '../assets/shots/kalan-desktop.png';
 import kalanMobile from '../assets/shots/kalan-mobile.png';
-import passionDesktop from '../assets/shots/passionfitness-desktop.png';
-import passionMobile from '../assets/shots/passionfitness-mobile.png';
 
 const email = 'michele.orecchioni@outlook.com';
 const linkedin = 'https://linkedin.com/in/micheleorecchioni';
@@ -26,19 +27,6 @@ const stats = [
 ];
 
 const sites = [
-	{
-		name: 'Passion Fitness',
-		url: 'https://www.passionfitness.it/',
-		desc: 'Palestra a Roma (Tuscolana). Sito statico collegato al CRM interno del club, con un sistema di candidature spontanee costruito da zero al posto di un servizio di moduli esterno.',
-		points: [
-			'Pagina “Lavora con noi”: modulo accessibile con validazione, anti-spam e invio del CV direttamente al CRM.',
-			'Notifica interna al responsabile e email di conferma al candidato, con grafica coerente al brand.',
-			'Informativa privacy e cookie aggiornate: nuova finalità, conservazione dei CV, responsabili esterni.',
-		],
-		tags: ['Astro', 'MDX', 'Vercel', 'Supabase', 'SendGrid'],
-		desktop: passionDesktop,
-		mobile: passionMobile,
-	},
 	{
 		name: 'Recomp360',
 		url: 'https://recomp360.it/',
@@ -201,11 +189,15 @@ const certs = [
 
 			<section id="progetti">
 				<div class="wrap">
-					<p class="eyebrow">Progetti</p>
-					<h2>Siti realizzati</h2>
-					<p class="lead">Struttura, contenuti, sviluppo, pubblicazione e manutenzione, in autonomia. Clicca per aprire il sito reale.</p>
+					<header class="sec-head">
+						<h2>
+							siti realizzati
+						</h2>
+						<p>Dalla struttura alla manutenzione, in autonomia.</p>
+					</header>
 
 					<div class="sites">
+						<CaseStudy data={passion} />
 						{
 							sites.map((s) => {
 								const inner = (
@@ -1046,15 +1038,36 @@ const certs = [
 		border-block: 1px solid var(--line);
 	}
 
+	#progetti {
+		padding-top: clamp(40px, 6vw, 72px);
+	}
+	.sec-head {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 6px 24px;
+		margin-bottom: 22px;
+	}
+	.sec-head h2 {
+		margin: 0;
+		font-family: 'JetBrains Mono Variable', ui-monospace, monospace;
+		font-size: clamp(1rem, 3vw, 1.2rem);
+		font-weight: 500;
+		letter-spacing: 0;
+		text-transform: lowercase;
+		color: #5ee7ff;
+		text-shadow: 0 0 10px rgba(94, 231, 255, 0.7);
+	}
+	.sec-head p {
+		margin: 0;
+		font-size: 0.92rem;
+		color: var(--muted);
+	}
 	.sites {
 		display: grid;
-		gap: 20px;
-		margin-top: 40px;
-	}
-	@media (min-width: 760px) {
-		.sites {
-			grid-template-columns: repeat(2, 1fr);
-		}
+		grid-template-columns: minmax(0, 1fr);
+		gap: clamp(28px, 5vw, 48px);
 	}
 	.site {
 		display: flex;
@@ -1154,20 +1167,18 @@ const certs = [
 		border-radius: 999px;
 		color: var(--accent-2);
 	}
-	.site {
-		height: 100%;
-	}
-	.site:has(.points) {
-		grid-column: 1 / -1;
-	}
 	@media (min-width: 760px) {
-		.site:has(.points) {
+		.site {
 			display: grid;
 			grid-template-columns: 1fr 1fr;
 		}
-		.site:has(.points) .shot {
+		.site .shot {
 			aspect-ratio: auto;
-			min-height: 320px;
+			min-height: 300px;
+		}
+		.meta {
+			align-self: center;
+			padding: 32px;
 		}
 	}
 

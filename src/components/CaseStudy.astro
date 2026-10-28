@@ -1,0 +1,730 @@
+---
+import { Image } from 'astro:assets';
+import type { CaseData } from '../data/passion';
+
+interface Props {
+	data: CaseData;
+}
+
+const { data } = Astro.props;
+const base = import.meta.env.BASE_URL.replace(/\/$/, '');
+const pad = (n: number) => String(n).padStart(2, '0');
+const total = pad(data.slides.length);
+const lenses = [
+	['funnel', 'Funnel'],
+	['marketing', 'Marketing'],
+	['tech', 'Tecnica'],
+] as const;
+---
+
+<article class="case reveal" data-case data-mode="desktop" data-lens="funnel" data-host={data.host}>
+	<header class="head">
+		<h3>{data.name}</h3>
+	</header>
+
+	<div class="stage">
+		<div class="view" data-view>
+			<div class="browser dev-d">
+				<div class="chrome">
+					<i />
+					<i />
+					<i />
+					<span class="url" data-url>
+						{data.host}
+						{data.slides[0].path}
+					</span>
+				</div>
+				<div class="screen sd">
+					{
+						data.slides.map((s, i) => (
+							<div class:list={['layer', { on: i === 0 }]} data-s={i}>
+								<Image class="still" src={s.d} alt={`${data.name}, ${s.label}, desktop`} widths={[640, 1000]} sizes="(min-width: 900px) 640px, 92vw" loading="lazy" />
+								{s.video && (
+									<>
+										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} aria-hidden="true" tabindex="-1" />
+										<Image class="still" src={s.video.holeD} alt="" widths={[640, 1000]} sizes="(min-width: 900px) 640px, 92vw" loading="lazy" />
+									</>
+								)}
+							</div>
+						))
+					}
+					<span class="sweep" aria-hidden="true"></span>
+				</div>
+			</div>
+			<div class="phone dev-m">
+				<div class="screen sm">
+					{
+						data.slides.map((s, i) => (
+							<div class:list={['layer', { on: i === 0 }]} data-s={i}>
+								<Image class="still" src={s.m} alt={`${data.name}, ${s.label}, mobile`} widths={[300, 600]} sizes="300px" loading="lazy" />
+								{s.video && (
+									<>
+										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} aria-hidden="true" tabindex="-1" />
+										<Image class="still" src={s.video.holeM} alt="" widths={[300, 600]} sizes="300px" loading="lazy" />
+									</>
+								)}
+							</div>
+						))
+					}
+					<span class="sweep" aria-hidden="true"></span>
+				</div>
+			</div>
+		</div>
+
+		<div class="notes">
+			<div class="seg" role="group" aria-label="Dispositivo">
+				<button type="button" data-mode-btn="desktop" aria-pressed="true">Desktop</button>
+				<button type="button" data-mode-btn="mobile" aria-pressed="false">Mobile</button>
+			</div>
+
+			<div class="stack titles" aria-live="polite">
+				{
+					data.slides.map((s, i) => (
+						<div class:list={['ti', { on: i === 0 }]} data-s={i} data-path={s.path}>
+							<h4>
+								<span>{s.label}</span>
+							</h4>
+							<a class="open" href={`${data.origin}${s.path}`} target="_blank" rel="noopener noreferrer">
+								Apri la pagina <span aria-hidden="true">↗</span>
+							</a>
+						</div>
+					))
+				}
+			</div>
+
+			<div class="lens" role="group" aria-label="Chiave di lettura">
+				{lenses.map(([k, l]) => <button type="button" data-lens-btn={k} aria-pressed={k === 'funnel' ? 'true' : 'false'}>{l}</button>)}
+			</div>
+
+			<div class="stack texts">
+				{
+					data.slides.map((s, i) =>
+						lenses.map(([k]) => (
+							<div class:list={['t', { on: i === 0 && k === 'funnel' }]} data-s={i} data-l={k}>
+								<p>{s[k]}</p>
+								{k === 'tech' && <p class="stackline">Stack: {data.stack.join(' · ')}</p>}
+							</div>
+						)),
+					)
+				}
+			</div>
+
+			<div class="pager">
+				<span class="count" data-count>01 / {total}</span>
+				<button type="button" class="arrow" data-prev aria-label="Pagina precedente" disabled>←</button>
+				<button type="button" class="arrow" data-next aria-label="Pagina successiva">→</button>
+			</div>
+		</div>
+	</div>
+</article>
+
+<style>
+	.case {
+		position: relative;
+		min-width: 0;
+		border-top: 1px solid rgba(255, 255, 255, 0.22);
+		padding-top: 22px;
+		--ease: cubic-bezier(0.77, 0, 0.18, 1);
+	}
+	.case::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, #5ee7ff, #fff, #9d7bff, transparent) no-repeat -35% 0 / 35% 100%;
+		filter: drop-shadow(0 0 6px #5ee7ff);
+		animation: case-line 9s ease-in-out infinite;
+	}
+	@keyframes case-line {
+		to {
+			background-position: 135% 0;
+		}
+	}
+
+	.head {
+		margin-bottom: 18px;
+	}
+	.head h3 {
+		font-weight: 600;
+		font-size: clamp(2rem, 7vw, 3rem);
+		line-height: 1;
+		letter-spacing: -0.035em;
+		color: #fff;
+	}
+
+	.stage {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 18px;
+	}
+	@media (min-width: 900px) {
+		.stage {
+			grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+			gap: clamp(32px, 4vw, 64px);
+			align-items: center;
+		}
+	}
+
+	/* Modalità dispositivo */
+	.dev-m {
+		display: none;
+	}
+	[data-mode='mobile'] .dev-m {
+		display: block;
+	}
+	[data-mode='mobile'] .dev-d {
+		display: none;
+	}
+
+	.view {
+		min-width: 0;
+		display: flex;
+		justify-content: center;
+		padding: 4px 0;
+		touch-action: pan-y;
+		--ph: clamp(200px, calc(100svh - 600px), 400px);
+	}
+	@media (max-width: 380px) {
+		.view {
+			--ph: clamp(170px, calc(100svh - 600px), 400px);
+		}
+	}
+	@media (min-width: 900px) {
+		.view {
+			--ph: clamp(300px, calc(100svh - 300px), 460px);
+		}
+	}
+	.browser {
+		width: 100%;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		border-radius: 10px;
+		overflow: hidden;
+		background: #05060a;
+		box-shadow: 0 30px 70px -34px rgba(94, 231, 255, 0.3);
+	}
+	.chrome {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		height: 32px;
+		padding: 0 12px;
+		background: #11141d;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+	.chrome i {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.22);
+	}
+	.url {
+		margin-left: 10px;
+		min-width: 0;
+		font-size: 0.72rem;
+		color: var(--muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.phone {
+		width: calc(var(--ph) * 0.4621 + 18px);
+		max-width: 100%;
+		padding: 8px;
+		border-radius: 32px;
+		background: #11141d;
+		border: 1px solid rgba(255, 255, 255, 0.22);
+		box-shadow: 0 30px 70px -34px rgba(157, 123, 255, 0.5);
+	}
+	.phone .screen {
+		border-radius: 25px;
+	}
+	.screen {
+		position: relative;
+		overflow: hidden;
+		background: #05060a;
+	}
+	.sd {
+		aspect-ratio: 1440 / 900;
+	}
+	.sm {
+		aspect-ratio: 390 / 844;
+	}
+
+	/* Pagine sovrapposte: entra una, esce l'altra */
+	.layer {
+		position: absolute;
+		inset: 0;
+		visibility: hidden;
+	}
+	.layer.on,
+	.layer.leaving {
+		visibility: visible;
+	}
+	.layer.on {
+		z-index: 2;
+	}
+	.layer.leaving {
+		z-index: 1;
+		animation: leave 0.9s var(--ease) both;
+	}
+	.layer.in-next {
+		animation: in-next 0.9s var(--ease) both;
+	}
+	.layer.in-prev {
+		animation: in-prev 0.9s var(--ease) both;
+	}
+	@keyframes in-next {
+		from {
+			clip-path: inset(0 0 0 100%);
+			transform: scale(1.06);
+			filter: brightness(1.5) saturate(1.2);
+		}
+		to {
+			clip-path: inset(0 0 0 0);
+			transform: none;
+			filter: none;
+		}
+	}
+	@keyframes in-prev {
+		from {
+			clip-path: inset(0 100% 0 0);
+			transform: scale(1.06);
+			filter: brightness(1.5) saturate(1.2);
+		}
+		to {
+			clip-path: inset(0 0 0 0);
+			transform: none;
+			filter: none;
+		}
+	}
+	@keyframes leave {
+		to {
+			transform: scale(0.94);
+			filter: blur(6px) brightness(0.45);
+		}
+	}
+	.sweep {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 2px;
+		z-index: 3;
+		opacity: 0;
+		pointer-events: none;
+		background: linear-gradient(180deg, transparent, #fff 20%, #5ee7ff 50%, #9d7bff 80%, transparent);
+		box-shadow:
+			0 0 12px #5ee7ff,
+			0 0 34px rgba(157, 123, 255, 0.9);
+	}
+	.go-next .sweep {
+		animation: sweep-next 0.9s var(--ease) both;
+	}
+	.go-prev .sweep {
+		animation: sweep-prev 0.9s var(--ease) both;
+	}
+	@keyframes sweep-next {
+		0% {
+			left: 100%;
+			opacity: 1;
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			left: 0;
+			opacity: 0;
+		}
+	}
+	@keyframes sweep-prev {
+		0% {
+			left: 0;
+			opacity: 1;
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			left: 100%;
+			opacity: 0;
+		}
+	}
+
+	.screen :global(.still) {
+		position: absolute;
+		inset: 0;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top;
+	}
+	.vid {
+		position: absolute;
+		left: 0;
+		top: 0;
+		width: 66.6667%;
+		height: 100%;
+		object-fit: cover;
+		object-position: 50% 25%;
+		opacity: 0;
+		transition: opacity 0.6s;
+	}
+	.sm .vid {
+		width: 100%;
+		height: 66.6667%;
+	}
+	.vid.on {
+		opacity: 1;
+	}
+
+	/* Note: gli elementi che cambiano stanno sovrapposti nella stessa cella,
+	   così l'altezza resta quella del più lungo e nulla intorno si sposta */
+	.notes {
+		min-width: 0;
+	}
+	.stack {
+		display: grid;
+	}
+	.stack > * {
+		grid-area: 1 / 1;
+		min-width: 0;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(12px);
+		filter: blur(6px);
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease,
+			filter 0.3s ease,
+			visibility 0s linear 0.3s;
+	}
+	.stack > .on {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		filter: none;
+		transition:
+			opacity 0.55s ease 0.28s,
+			transform 0.7s var(--ease) 0.28s,
+			filter 0.55s ease 0.28s,
+			visibility 0s linear 0s;
+	}
+	.titles {
+		margin-bottom: 12px;
+	}
+	.ti {
+		display: flex;
+		flex-wrap: wrap;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 4px 16px;
+	}
+	.ti h4 {
+		margin: 0;
+		overflow: hidden;
+		font-weight: 600;
+		font-size: clamp(1.5rem, 5vw, 1.9rem);
+		line-height: 1.15;
+		letter-spacing: -0.025em;
+		color: #fff;
+	}
+	.ti h4 span {
+		display: inline-block;
+		transform: translateY(105%);
+		transition: transform 0.3s ease;
+	}
+	.ti.on h4 span {
+		transform: none;
+		transition: transform 0.8s var(--ease) 0.3s;
+	}
+	.open {
+		display: inline-flex;
+		align-items: center;
+		min-height: 44px;
+		gap: 6px;
+		font-size: 0.88rem;
+		font-weight: 500;
+		color: var(--muted);
+		text-decoration: none;
+		border-bottom: 1px solid transparent;
+		transition: color 0.2s, border-color 0.2s, text-shadow 0.2s;
+	}
+	.open:hover {
+		color: #fff;
+		border-bottom-color: #5ee7ff;
+		text-shadow: 0 0 10px rgba(94, 231, 255, 0.6);
+	}
+	.lens {
+		display: flex;
+		gap: 22px;
+		margin-bottom: 14px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	}
+	.lens button {
+		position: relative;
+		min-height: 44px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--muted);
+		font-family: var(--font-display);
+		font-size: 1rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+	.lens button::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 2px;
+		background: #5ee7ff;
+		box-shadow: 0 0 8px #5ee7ff;
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.4s var(--ease);
+	}
+	.lens button[aria-pressed='true'] {
+		color: #fff;
+	}
+	.lens button[aria-pressed='true']::after {
+		transform: scaleX(1);
+	}
+	.t p {
+		margin: 0;
+		font-size: clamp(0.95rem, 3.4vw, 1.02rem);
+		line-height: 1.6;
+		color: #eef0f6;
+	}
+	.t .stackline {
+		margin-top: 12px;
+		font-size: 0.82rem;
+		color: var(--muted);
+	}
+
+	/* Comandi */
+	.seg {
+		display: inline-flex;
+		margin-bottom: 8px;
+	}
+	.seg button {
+		min-height: 44px;
+		padding: 0 14px 0 0;
+		border: 0;
+		background: transparent;
+		color: var(--muted);
+		font: inherit;
+		font-size: 0.86rem;
+		font-weight: 600;
+		letter-spacing: 0.04em;
+		cursor: pointer;
+		transition: color 0.2s, text-shadow 0.2s;
+	}
+	.seg button + button {
+		padding-left: 14px;
+		border-left: 1px solid rgba(255, 255, 255, 0.22);
+	}
+	.seg button[aria-pressed='true'] {
+		color: #5ee7ff;
+		text-shadow: 0 0 10px rgba(94, 231, 255, 0.7);
+	}
+	.pager {
+		display: flex;
+		align-items: center;
+		gap: 10px;
+		margin-top: 16px;
+	}
+	.count {
+		margin-right: 6px;
+		font-size: 0.86rem;
+		font-weight: 600;
+		letter-spacing: 0.08em;
+		color: #5ee7ff;
+		text-shadow: 0 0 10px rgba(94, 231, 255, 0.55);
+		white-space: nowrap;
+		font-variant-numeric: tabular-nums;
+	}
+	.arrow {
+		width: 46px;
+		height: 46px;
+		border-radius: 50%;
+		border: 1px solid #5ee7ff;
+		background: transparent;
+		color: #5ee7ff;
+		font-size: 1.1rem;
+		cursor: pointer;
+		box-shadow:
+			0 0 12px rgba(94, 231, 255, 0.3),
+			inset 0 0 10px rgba(94, 231, 255, 0.1);
+		transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+	}
+	.arrow[data-next] {
+		border-color: transparent;
+		background: linear-gradient(135deg, #7c6cff, #22d3ee);
+		color: #080a10;
+		box-shadow: 0 0 20px -2px rgba(94, 231, 255, 0.55);
+	}
+	.arrow:hover:not(:disabled) {
+		transform: translateY(-2px);
+		box-shadow:
+			0 0 22px rgba(94, 231, 255, 0.6),
+			0 0 40px rgba(157, 123, 255, 0.35);
+	}
+	.arrow:disabled {
+		opacity: 0.28;
+		cursor: default;
+		box-shadow: none;
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.case::before {
+			animation: none;
+			background: none;
+		}
+		.layer.leaving,
+		.layer.in-next,
+		.layer.in-prev,
+		.go-next .sweep,
+		.go-prev .sweep {
+			animation: none;
+		}
+		.layer.leaving {
+			visibility: hidden;
+		}
+		.stack > *,
+		.stack > .on,
+		.ti h4 span,
+		.ti.on h4 span {
+			transition: none;
+			transform: none;
+			filter: none;
+		}
+	}
+</style>
+
+<script>
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	document.querySelectorAll<HTMLElement>('[data-case]').forEach((root) => {
+		const host = root.dataset.host ?? '';
+		const screens = [...root.querySelectorAll<HTMLElement>('.screen')];
+		const titles = [...root.querySelectorAll<HTMLElement>('.ti')];
+		const texts = [...root.querySelectorAll<HTMLElement>('.t')];
+		const url = root.querySelector<HTMLElement>('[data-url]');
+		const count = root.querySelector<HTMLElement>('[data-count]')!;
+		const prev = root.querySelector<HTMLButtonElement>('[data-prev]')!;
+		const next = root.querySelector<HTMLButtonElement>('[data-next]')!;
+		const modeBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-mode-btn]')];
+		const lensBtns = [...root.querySelectorAll<HTMLButtonElement>('[data-lens-btn]')];
+		const n = titles.length;
+		const pad = (x: number) => String(x).padStart(2, '0');
+
+		let idx = 0;
+		let lens = 'funnel';
+		let visible = false;
+
+		const syncVideos = () => {
+			root.querySelectorAll<HTMLVideoElement>('video.vid').forEach((v) => {
+				const layer = v.closest('.layer');
+				const active = layer?.classList.contains('on') && v.offsetParent !== null;
+				if (!reduce && visible && active) {
+					if (!v.src) v.src = v.dataset.src ?? '';
+					v.play().then(() => v.classList.add('on')).catch(() => {});
+				} else {
+					v.pause();
+				}
+			});
+		};
+
+		const syncText = () => {
+			titles.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx));
+			texts.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx && t.dataset.l === lens));
+		};
+
+		const show = (i: number) => {
+			if (i < 0 || i >= n || i === idx) return;
+			const dir = i > idx ? 'next' : 'prev';
+			screens.forEach((scr) => {
+				const cur = scr.querySelector<HTMLElement>(`.layer[data-s="${idx}"]`)!;
+				const nxt = scr.querySelector<HTMLElement>(`.layer[data-s="${i}"]`)!;
+				scr.querySelectorAll('.layer').forEach((l) => l.classList.remove('leaving', 'in-next', 'in-prev'));
+				cur.classList.remove('on');
+				nxt.classList.add('on');
+				if (!reduce) {
+					cur.classList.add('leaving');
+					nxt.classList.add(`in-${dir}`);
+					scr.classList.remove('go-next', 'go-prev');
+					void scr.offsetWidth;
+					scr.classList.add(`go-${dir}`);
+					window.clearTimeout(Number(scr.dataset.t));
+					scr.dataset.t = String(
+						window.setTimeout(() => {
+							cur.classList.remove('leaving');
+							nxt.classList.remove('in-next', 'in-prev');
+							scr.classList.remove('go-next', 'go-prev');
+						}, 950),
+					);
+				}
+			});
+			idx = i;
+			if (url) url.textContent = `${host}${titles[i].dataset.path ?? ''}`;
+			count.textContent = `${pad(i + 1)} / ${pad(n)}`;
+			prev.disabled = i === 0;
+			next.disabled = i === n - 1;
+			syncText();
+			syncVideos();
+		};
+
+		prev.addEventListener('click', () => show(idx - 1));
+		next.addEventListener('click', () => show(idx + 1));
+		root.addEventListener('keydown', (e) => {
+			if ((e.target as HTMLElement).closest('input, textarea')) return;
+			if (e.key === 'ArrowRight') show(idx + 1);
+			if (e.key === 'ArrowLeft') show(idx - 1);
+		});
+
+		// swipe orizzontale sullo schermo
+		const view = root.querySelector<HTMLElement>('[data-view]')!;
+		let sx = 0;
+		let sy = 0;
+		view.addEventListener('pointerdown', (e) => {
+			sx = e.clientX;
+			sy = e.clientY;
+		});
+		view.addEventListener('pointerup', (e) => {
+			const dx = e.clientX - sx;
+			const dy = e.clientY - sy;
+			if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) show(idx + (dx < 0 ? 1 : -1));
+		});
+
+		lensBtns.forEach((b) =>
+			b.addEventListener('click', () => {
+				lens = b.dataset.lensBtn ?? 'funnel';
+				root.dataset.lens = lens;
+				lensBtns.forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+				syncText();
+			}),
+		);
+
+		const setMode = (mode: string) => {
+			root.dataset.mode = mode;
+			modeBtns.forEach((b) => b.setAttribute('aria-pressed', String(b.dataset.modeBtn === mode)));
+			syncVideos();
+		};
+		modeBtns.forEach((b) => b.addEventListener('click', () => setMode(b.dataset.modeBtn ?? 'desktop')));
+		if (matchMedia('(max-width: 760px)').matches) setMode('mobile');
+
+		new IntersectionObserver(
+			(entries) => {
+				visible = entries.some((e) => e.isIntersecting);
+				syncVideos();
+			},
+			{ threshold: 0.25 },
+		).observe(view);
+	});
+</script>
