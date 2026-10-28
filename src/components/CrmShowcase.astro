@@ -1,0 +1,519 @@
+---
+import { Image, getImage } from 'astro:assets';
+import type { CrmShot } from '../data/crm';
+
+interface Props {
+	shots: CrmShot[];
+}
+
+const { shots } = Astro.props;
+const big = await Promise.all(shots.map((s) => getImage({ src: s.img, width: s.img.width, format: 'webp', quality: 82 })));
+---
+
+<div class="gal reveal" data-gal>
+	<div class="stage">
+		<button type="button" class="zoom" data-zoom aria-label="Ingrandisci la schermata">
+			<span class="frame">
+				<span class="chrome">
+					<i></i><i></i><i></i>
+					<span class="url">crm · schermate reali, dati oscurati</span>
+					<span class="hint" aria-hidden="true">ingrandisci ⤢</span>
+				</span>
+				<span class="screen">
+					{
+						shots.map((s, i) => (
+							<span class:list={['layer', { on: i === 0 }]} data-s={i}>
+								<Image src={s.img} alt={s.alt} widths={[640, 960, 1400]} sizes="(min-width: 900px) 640px, 92vw" loading={i === 0 ? 'eager' : 'lazy'} />
+							</span>
+						))
+					}
+					<span class="sweep" aria-hidden="true"></span>
+				</span>
+			</span>
+		</button>
+
+		<div class="notes">
+			<div class="tabs" role="group" aria-label="Schermata del CRM">
+				{shots.map((s, i) => <button type="button" data-tab={i} aria-pressed={i === 0 ? 'true' : 'false'}>{s.label}</button>)}
+			</div>
+			<div class="texts" aria-live="polite">
+				{shots.map((s, i) => <p class:list={['t', { on: i === 0 }]} data-s={i}>{s.text}</p>)}
+			</div>
+		</div>
+	</div>
+
+	<dialog class="lb" data-lb aria-label="Schermata ingrandita">
+		<div class="lb-bar">
+			<span class="lb-title" data-lb-title></span>
+			<button type="button" class="lb-close" data-lb-close aria-label="Chiudi">✕</button>
+		</div>
+		<div class="pan"><img alt="" data-lb-img /></div>
+	</dialog>
+	<script type="application/json" data-big set:html={JSON.stringify(big.map((b, i) => ({ src: b.src, alt: shots[i].alt, label: shots[i].label })))}></script>
+</div>
+
+<style>
+	.gal {
+		--ease: cubic-bezier(0.77, 0, 0.18, 1);
+		position: relative;
+		padding-top: 18px;
+		margin-bottom: clamp(28px, 5vw, 44px);
+		border-top: 1px solid rgba(255, 255, 255, 0.22);
+	}
+	.gal::before {
+		content: '';
+		position: absolute;
+		top: -1px;
+		left: 0;
+		right: 0;
+		height: 2px;
+		background: linear-gradient(90deg, transparent, #5ee7ff, #fff, #9d7bff, transparent) no-repeat -35% 0 / 35% 100%;
+		filter: drop-shadow(0 0 6px #5ee7ff);
+		animation: gal-line 8s ease-in-out infinite;
+	}
+	@keyframes gal-line {
+		to {
+			background-position: 135% 0;
+		}
+	}
+	.stage {
+		display: grid;
+		grid-template-columns: minmax(0, 1fr);
+		gap: 16px;
+	}
+	/* schermata e testo uno sotto l'altro, la schermata a tutta larghezza */
+	@media (min-width: 900px) {
+		.stage {
+			gap: 22px;
+		}
+		.t {
+			max-width: 72ch;
+			font-size: 1.02rem;
+		}
+	}
+
+	.zoom {
+		display: block;
+		width: 100%;
+		padding: 0;
+		border: 0;
+		background: none;
+		color: inherit;
+		font: inherit;
+		text-align: left;
+		cursor: zoom-in;
+	}
+	.frame {
+		display: block;
+		border: 1px solid rgba(255, 255, 255, 0.18);
+		border-radius: 10px;
+		overflow: hidden;
+		background: #05060a;
+		box-shadow: 0 30px 70px -34px rgba(94, 231, 255, 0.3);
+		transition: border-color 0.25s, box-shadow 0.25s;
+	}
+	@media (hover: hover) {
+		.zoom:hover .frame {
+			border-color: #5ee7ff;
+			box-shadow:
+				0 0 22px rgba(94, 231, 255, 0.35),
+				0 30px 70px -34px rgba(94, 231, 255, 0.4);
+		}
+	}
+	.chrome {
+		display: flex;
+		align-items: center;
+		gap: 6px;
+		height: 32px;
+		padding: 0 12px;
+		background: #11141d;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+	}
+	.chrome i {
+		width: 8px;
+		height: 8px;
+		border-radius: 50%;
+		background: rgba(255, 255, 255, 0.22);
+	}
+	.url {
+		margin-left: 10px;
+		min-width: 0;
+		flex: 1;
+		font-size: 0.72rem;
+		color: var(--muted);
+		white-space: nowrap;
+		overflow: hidden;
+		text-overflow: ellipsis;
+	}
+	.hint {
+		flex: none;
+		font-size: 0.7rem;
+		letter-spacing: 0.04em;
+		color: #5ee7ff;
+	}
+	.screen {
+		position: relative;
+		display: block;
+		overflow: hidden;
+		aspect-ratio: 1917 / 868;
+		background: #05060a;
+	}
+	.layer {
+		position: absolute;
+		inset: 0;
+		display: block;
+		visibility: hidden;
+	}
+	.layer :global(img) {
+		display: block;
+		width: 100%;
+		height: 100%;
+		object-fit: cover;
+		object-position: top left;
+	}
+	.layer.on,
+	.layer.leaving {
+		visibility: visible;
+	}
+	.layer.on {
+		z-index: 2;
+	}
+	.layer.leaving {
+		z-index: 1;
+		animation: leave 0.9s var(--ease) both;
+	}
+	.layer.in-next {
+		animation: in-next 0.9s var(--ease) both;
+	}
+	.layer.in-prev {
+		animation: in-prev 0.9s var(--ease) both;
+	}
+	@keyframes in-next {
+		from {
+			clip-path: inset(0 0 0 100%);
+			transform: scale(1.06);
+			filter: brightness(1.5) saturate(1.2);
+		}
+		to {
+			clip-path: inset(0 0 0 0);
+			transform: none;
+			filter: none;
+		}
+	}
+	@keyframes in-prev {
+		from {
+			clip-path: inset(0 100% 0 0);
+			transform: scale(1.06);
+			filter: brightness(1.5) saturate(1.2);
+		}
+		to {
+			clip-path: inset(0 0 0 0);
+			transform: none;
+			filter: none;
+		}
+	}
+	@keyframes leave {
+		to {
+			transform: scale(0.94);
+			filter: blur(6px) brightness(0.45);
+		}
+	}
+	.sweep {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		width: 2px;
+		z-index: 3;
+		opacity: 0;
+		pointer-events: none;
+		background: linear-gradient(180deg, transparent, #fff 20%, #5ee7ff 50%, #9d7bff 80%, transparent);
+		box-shadow:
+			0 0 12px #5ee7ff,
+			0 0 34px rgba(157, 123, 255, 0.9);
+	}
+	.go-next .sweep {
+		animation: sweep-next 0.9s var(--ease) both;
+	}
+	.go-prev .sweep {
+		animation: sweep-prev 0.9s var(--ease) both;
+	}
+	@keyframes sweep-next {
+		0% {
+			left: 100%;
+			opacity: 1;
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			left: 0;
+			opacity: 0;
+		}
+	}
+	@keyframes sweep-prev {
+		0% {
+			left: 0;
+			opacity: 1;
+		}
+		85% {
+			opacity: 1;
+		}
+		100% {
+			left: 100%;
+			opacity: 0;
+		}
+	}
+
+	.notes {
+		min-width: 0;
+	}
+	.tabs {
+		display: flex;
+		flex-wrap: wrap;
+		gap: 4px 22px;
+		margin-bottom: 12px;
+		border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	}
+	.tabs button {
+		position: relative;
+		min-height: 44px;
+		padding: 0;
+		border: 0;
+		background: transparent;
+		color: var(--muted);
+		font-family: var(--font-display);
+		font-size: 1rem;
+		font-weight: 500;
+		letter-spacing: -0.01em;
+		cursor: pointer;
+		transition: color 0.2s;
+	}
+	.tabs button::after {
+		content: '';
+		position: absolute;
+		left: 0;
+		right: 0;
+		bottom: -1px;
+		height: 2px;
+		background: #5ee7ff;
+		box-shadow: 0 0 8px #5ee7ff;
+		transform: scaleX(0);
+		transform-origin: left;
+		transition: transform 0.4s var(--ease);
+	}
+	.tabs button[aria-pressed='true'] {
+		color: #fff;
+	}
+	.tabs button[aria-pressed='true']::after {
+		transform: scaleX(1);
+	}
+	.texts {
+		display: grid;
+	}
+	.t {
+		grid-area: 1 / 1;
+		min-width: 0;
+		margin: 0;
+		font-size: clamp(0.93rem, 3.3vw, 1rem);
+		line-height: 1.6;
+		color: #eef0f6;
+		opacity: 0;
+		visibility: hidden;
+		transform: translateY(12px);
+		filter: blur(6px);
+		transition:
+			opacity 0.3s ease,
+			transform 0.3s ease,
+			filter 0.3s ease,
+			visibility 0s linear 0.3s;
+	}
+	.t.on {
+		opacity: 1;
+		visibility: visible;
+		transform: none;
+		filter: none;
+		transition:
+			opacity 0.55s ease 0.28s,
+			transform 0.7s var(--ease) 0.28s,
+			filter 0.55s ease 0.28s,
+			visibility 0s linear 0s;
+	}
+
+	/* schermata ingrandita */
+	.lb {
+		overscroll-behavior: contain;
+		width: 100vw;
+		max-width: 100vw;
+		height: 100dvh;
+		max-height: 100dvh;
+		margin: 0;
+		padding: 0;
+		border: 0;
+		background: rgba(5, 6, 10, 0.97);
+		color: #fff;
+	}
+	.lb::backdrop {
+		background: rgba(5, 6, 10, 0.8);
+	}
+	.lb[open] {
+		display: flex;
+		flex-direction: column;
+	}
+	.lb-bar {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		gap: 12px;
+		padding: 6px var(--gutter);
+		border-bottom: 1px solid rgba(255, 255, 255, 0.14);
+	}
+	.lb-title {
+		font-family: var(--font-display);
+		font-weight: 600;
+		letter-spacing: -0.01em;
+	}
+	.lb-close {
+		width: 44px;
+		height: 44px;
+		border-radius: 50%;
+		border: 1px solid #5ee7ff;
+		background: transparent;
+		color: #5ee7ff;
+		font-size: 1rem;
+		cursor: pointer;
+		box-shadow: 0 0 12px rgba(94, 231, 255, 0.3);
+	}
+	.pan {
+		flex: 1;
+		min-height: 0;
+		overflow: auto;
+		overscroll-behavior: contain;
+	}
+	.pan img {
+		display: block;
+		width: max(100%, 1500px);
+		max-width: 1917px;
+		height: auto;
+		margin: 0 auto;
+	}
+
+	@media (max-width: 899px) and (max-height: 680px) {
+		.stage {
+			gap: 10px;
+		}
+		.t {
+			font-size: 0.86rem;
+			line-height: 1.5;
+		}
+		.tabs {
+			margin-bottom: 8px;
+		}
+	}
+
+	@media (prefers-reduced-motion: reduce) {
+		.gal::before {
+			animation: none;
+			background: none;
+		}
+		.layer.leaving,
+		.layer.in-next,
+		.layer.in-prev,
+		.go-next .sweep,
+		.go-prev .sweep {
+			animation: none;
+		}
+		.layer.leaving {
+			visibility: hidden;
+		}
+		.t,
+		.t.on {
+			transition: none;
+			transform: none;
+			filter: none;
+		}
+	}
+</style>
+
+<script>
+	const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+	document.querySelectorAll<HTMLElement>('[data-gal]').forEach((root) => {
+		const screen = root.querySelector<HTMLElement>('.screen')!;
+		const layers = [...root.querySelectorAll<HTMLElement>('.layer')];
+		const texts = [...root.querySelectorAll<HTMLElement>('.t')];
+		const tabs = [...root.querySelectorAll<HTMLButtonElement>('[data-tab]')];
+		const big: { src: string; alt: string; label: string }[] = JSON.parse(root.querySelector('[data-big]')!.textContent ?? '[]');
+		const dlg = root.querySelector<HTMLDialogElement>('[data-lb]')!;
+		const lbImg = root.querySelector<HTMLImageElement>('[data-lb-img]')!;
+		const lbTitle = root.querySelector<HTMLElement>('[data-lb-title]')!;
+		const zoom = root.querySelector<HTMLButtonElement>('[data-zoom]')!;
+		let idx = 0;
+		let timer = 0;
+
+		const show = (i: number) => {
+			if (i === idx || i < 0 || i >= layers.length) return;
+			const dir = i > idx ? 'next' : 'prev';
+			const cur = layers[idx];
+			const nxt = layers[i];
+			layers.forEach((l) => l.classList.remove('leaving', 'in-next', 'in-prev'));
+			cur.classList.remove('on');
+			nxt.classList.add('on');
+			if (!reduce) {
+				cur.classList.add('leaving');
+				nxt.classList.add(`in-${dir}`);
+				screen.classList.remove('go-next', 'go-prev');
+				void screen.offsetWidth;
+				screen.classList.add(`go-${dir}`);
+				window.clearTimeout(timer);
+				timer = window.setTimeout(() => {
+					cur.classList.remove('leaving');
+					nxt.classList.remove('in-next', 'in-prev');
+					screen.classList.remove('go-next', 'go-prev');
+				}, 950);
+			}
+			idx = i;
+			texts.forEach((t) => t.classList.toggle('on', Number(t.dataset.s) === idx));
+			tabs.forEach((b, k) => b.setAttribute('aria-pressed', String(k === idx)));
+		};
+
+		tabs.forEach((b, i) => b.addEventListener('click', () => show(i)));
+
+		// swipe sullo schermo, come nelle schede dei siti
+		let sx = 0;
+		let sy = 0;
+		zoom.addEventListener('pointerdown', (e) => {
+			sx = e.clientX;
+			sy = e.clientY;
+		});
+		zoom.addEventListener('pointerup', (e) => {
+			const dx = e.clientX - sx;
+			const dy = e.clientY - sy;
+			if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+				show(idx + (dx < 0 ? 1 : -1));
+				suppress = true;
+			}
+		});
+		let suppress = false;
+
+		const open = () => {
+			if (suppress) {
+				suppress = false;
+				return;
+			}
+			const b = big[idx];
+			lbImg.src = b.src;
+			lbImg.alt = b.alt;
+			lbTitle.textContent = `CRM · ${b.label}`;
+			dlg.showModal();
+			dlg.querySelector<HTMLElement>('.pan')!.scrollTo(0, 0);
+		};
+		const close = () => dlg.close();
+		zoom.addEventListener('click', open);
+		root.querySelector('[data-lb-close]')!.addEventListener('click', close);
+		dlg.addEventListener('click', (e) => e.target === dlg && close());
+		dlg.addEventListener('close', () => {
+			zoom.focus({ preventScroll: true });
+		});
+	});
+</script>
