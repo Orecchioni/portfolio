@@ -1,4 +1,4 @@
-import type { ImageMetadata } from 'astro';
+import type { CaseData } from './types';
 
 import homeD from '../assets/shots/passion/home-d.png';
 import homeM from '../assets/shots/passion/home-m.png';
@@ -13,28 +13,6 @@ import refM from '../assets/shots/passion/reformer-m.png';
 import lavD from '../assets/shots/passion/lavora-d.png';
 import lavM from '../assets/shots/passion/lavora-m.png';
 
-export interface Slide {
-	id: string;
-	label: string;
-	path: string;
-	d: ImageMetadata;
-	m: ImageMetadata;
-	/** Versione con il video "bucato": il video vero passa dietro. */
-	video?: { src: string; holeD: ImageMetadata; holeM: ImageMetadata };
-	funnel: string;
-	marketing: string;
-	tech: string;
-}
-
-export interface CaseData {
-	name: string;
-	host: string;
-	/** Indirizzo senza slash finale: ci si aggiunge il path di ogni pagina. */
-	origin: string;
-	stack: string[];
-	slides: Slide[];
-}
-
 export const passion: CaseData = {
 	name: 'Passion Fitness',
 	host: 'passionfitness.it',
@@ -47,12 +25,18 @@ export const passion: CaseData = {
 			path: '/',
 			d: homeD,
 			m: homeM,
-			video: { src: 'media/passion-hero.mp4', holeD: homeHoleD, holeM: homeHoleM },
+			video: {
+				src: 'media/passion-hero.mp4',
+				holeD: homeHoleD,
+				holeM: homeHoleM,
+				d: { l: 0, t: 0, w: 66.6667, h: 100, pos: '50% 25%' },
+				m: { l: 0, t: 0, w: 100, h: 66.6667, pos: '50% 25%' },
+			},
 			funnel:
-				'È lo smistamento: chi arriva per la prima volta va alla prova senza impegno, chi è già socio al portale clienti, chi sta valutando al planning o agli abbonamenti. La prova torna in tre punti, così l’azione è sempre a portata.',
+				'Ho progettato la home come smistamento: ogni pubblico ha la sua porta. Nuovi contatti verso la prova, soci verso l’area clienti, indecisi verso planning e abbonamenti, con la CTA principale ripetuta lungo la pagina.',
 			marketing:
-				'Prima il territorio, poi le prove: il claim nomina i quattro quartieri serviti e i numeri (30 anni, 2.000 m², oltre 250 lezioni al mese) rendono concreto «la più grande». Seguono i quattro prodotti, ognuno con la sua pagina.',
-			tech: 'Il sito resta statico e veloce, il resto lo fanno i sistemi giusti: la prova passa a un form di automazione, iscrizione e area soci al gestionale del club. Il video d’apertura parte muto e in loop.',
+				'Ho scritto i contenuti per far emergere subito posizionamento e prove a supporto: un claim territoriale pensato per la ricerca locale e numeri concreti al posto degli aggettivi.',
+			tech: 'Sito statico in Astro e MDX su Vercel, che passa ogni conversione al sistema giusto: la prova a un form di automazione, iscrizione e area soci al gestionale del club.',
 		},
 		{
 			id: 'orari',
@@ -61,10 +45,10 @@ export const passion: CaseData = {
 			d: orariD,
 			m: orariM,
 			funnel:
-				'È la pagina di chi sta già decidendo e vuole sapere se il corso cade nel suo orario. Il planning viene prima di tutto; la prova apre e chiude la pagina, per chi ha trovato la sua fascia.',
+				'Ho messo il planning al centro perché è il punto in cui chi valuta decide. La CTA di prova apre e chiude la pagina, per intercettare chi ha appena trovato il suo orario.',
 			marketing:
-				'L’orario è l’argomento: dalle 5 a mezzanotte, 365 giorni l’anno. Ogni linea ha una promessa diversa, piccoli gruppi nel Reformer, alta intensità in Energy, postura in Rebalance, così ognuno riconosce il suo corso.',
-			tech: 'Cinque planning settimanali, uno per linea, con selettore del giorno: su telefono si legge un giorno alla volta invece di una tabella illeggibile. Ogni planning ha un link diretto usato dal menu e dalle altre pagine.',
+				'Ho trasformato un’informazione di servizio in un argomento di vendita: titolo, meta description e testi puntano tutti sul vantaggio competitivo del club.',
+			tech: 'Planning settimanali con selettore del giorno, leggibili su telefono, e un’ancora per ogni linea: menu e altre pagine portano l’utente direttamente al punto giusto.',
 		},
 		{
 			id: 'abbonamenti',
@@ -73,10 +57,10 @@ export const passion: CaseData = {
 			d: abbD,
 			m: abbM,
 			funnel:
-				'Qui si chiude: ogni formula ha il suo pulsante di iscrizione, che porta direttamente al piano scelto nel gestionale. Chi non è convinto ha la prova, chi ha dubbi trova le FAQ su pagamento, certificato medico e sospensione.',
+				'Ho ridotto i passaggi verso l’iscrizione: ogni formula ha il suo pulsante, che apre l’iscrizione online già sul piano scelto. FAQ e prova coprono chi non è ancora pronto.',
 			marketing:
-				'Prezzi visibili e condizioni scritte per intero, quota di attivazione e costo della sospensione compresi: meno sorprese all’iscrizione, meno domande allo staff. Le formule vanno dalla sola sala pesi all’Open con Reformer.',
-			tech: 'Le formule sono contenuti MDX, non codice: cambiare un prezzo o una condizione è una modifica di testo che non tocca il layout. Pagamento e anagrafica restano nel gestionale, così il sito non tratta dati di pagamento.',
+				'Ho scelto la trasparenza come leva di conversione: condizioni scritte per intero, per arrivare all’iscrizione con meno dubbi e meno richieste allo staff.',
+			tech: 'Formule e condizioni gestite come contenuti MDX, modificabili senza toccare il layout. Il pagamento resta nel gestionale: il sito non tratta dati di pagamento.',
 		},
 		{
 			id: 'reformer',
@@ -85,10 +69,10 @@ export const passion: CaseData = {
 			d: refD,
 			m: refM,
 			funnel:
-				'Landing di una disciplina: porta chi cerca il Reformer verso la prova, ma lascia aperta la strada a orari e abbonamenti. Ogni beneficio ha il suo pulsante, così l’azione segue l’argomento che ha convinto.',
+				'Ho costruito una landing per singola disciplina, adatta a campagne e ricerca organica: un solo argomento e le stesse CTA del resto del sito, con un’uscita coerente per ogni beneficio.',
 			marketing:
-				'Parla a tre persone diverse: chi inizia (Small Class da massimo 7), chi è avanzato (Reformer, Tower e Chair), chi vuole un trainer solo per sé. I benefici sono concreti: postura, mal di schiena, forza.',
-			tech: 'Stessa struttura delle altre pagine di disciplina: media a sinistra, messaggio e pulsanti a destra. Aggiungere una disciplina significa scrivere contenuti, non progettare una pagina nuova.',
+				'Ho scritto il testo per segmenti di pubblico, dal principiante a chi cerca un percorso individuale: ognuno ritrova il proprio livello senza dover chiedere.',
+			tech: 'Template di pagina disciplina riutilizzabile: media a sinistra, messaggio e CTA a destra. Una nuova disciplina si pubblica scrivendo contenuti, senza nuovo sviluppo.',
 		},
 		{
 			id: 'lavora',
@@ -97,10 +81,10 @@ export const passion: CaseData = {
 			d: lavD,
 			m: lavM,
 			funnel:
-				'Un solo modulo, con le tre posizioni aperte e il CV allegato: candidarsi richiede un minuto e non si esce mai dal sito del club.',
+				'Ho sostituito un Typeform esterno con un flusso proprietario: modulo sul sito, candidatura direttamente nel CRM, conferma automatica al candidato e notifica al responsabile.',
 			marketing:
-				'Anche il reclutamento parla come il brand: niente Typeform esterno, e la conferma al candidato arriva con la grafica di Passion. Il responsabile trova la candidatura già nel CRM, nella sezione Curriculum.',
-			tech: 'Modulo in JavaScript senza librerie, con controlli su telefono, età e file prima dell’invio. Le candidature arrivano al CRM su Supabase senza chiavi esposte nel browser; le email partono via SendGrid. Informativa privacy aggiornata.',
+				'Ho portato anche il recruiting dentro il brand, dall’esperienza di candidatura all’email di conferma, e aggiornato l’informativa privacy al nuovo trattamento dei dati.',
+			tech: 'Modulo in JavaScript vanilla con validazione e anti-spam, Edge Function Supabase che ricontrolla i dati, email transazionali HTML via SendGrid. Nessuna chiave esposta nel browser.',
 		},
 	],
 };

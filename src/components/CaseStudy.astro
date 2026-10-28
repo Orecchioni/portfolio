@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import type { CaseData } from '../data/passion';
+import type { CaseData, VideoBox } from '../data/types';
 
 interface Props {
 	data: CaseData;
@@ -10,6 +10,7 @@ const { data } = Astro.props;
 const base = import.meta.env.BASE_URL.replace(/\/$/, '');
 const pad = (n: number) => String(n).padStart(2, '0');
 const total = pad(data.slides.length);
+const box = (b: VideoBox) => `left:${b.l}%;top:${b.t}%;width:${b.w}%;height:${b.h}%;object-position:${b.pos}`;
 const lenses = [
 	['funnel', 'Funnel'],
 	['marketing', 'Marketing'],
@@ -41,7 +42,7 @@ const lenses = [
 								<Image class="still" src={s.d} alt={`${data.name}, ${s.label}, desktop`} widths={[640, 1000]} sizes="(min-width: 900px) 640px, 92vw" loading="lazy" />
 								{s.video && (
 									<>
-										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} aria-hidden="true" tabindex="-1" />
+										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} style={box(s.video.d)} aria-hidden="true" tabindex="-1" />
 										<Image class="still" src={s.video.holeD} alt="" widths={[640, 1000]} sizes="(min-width: 900px) 640px, 92vw" loading="lazy" />
 									</>
 								)}
@@ -59,7 +60,7 @@ const lenses = [
 								<Image class="still" src={s.m} alt={`${data.name}, ${s.label}, mobile`} widths={[300, 600]} sizes="300px" loading="lazy" />
 								{s.video && (
 									<>
-										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} aria-hidden="true" tabindex="-1" />
+										<video class="vid" muted loop playsinline preload="none" data-src={`${base}/${s.video.src}`} style={box(s.video.m)} aria-hidden="true" tabindex="-1" />
 										<Image class="still" src={s.video.holeM} alt="" widths={[300, 600]} sizes="300px" loading="lazy" />
 									</>
 								)}
@@ -171,7 +172,7 @@ const lenses = [
 	}
 	@media (min-width: 900px) {
 		.stage {
-			grid-template-columns: minmax(0, 1.45fr) minmax(0, 1fr);
+			grid-template-columns: minmax(0, 1.7fr) minmax(0, 1fr);
 			gap: clamp(32px, 4vw, 64px);
 			align-items: center;
 		}
@@ -192,17 +193,20 @@ const lenses = [
 		min-width: 0;
 		display: flex;
 		justify-content: center;
-		padding: 4px 0;
+		align-items: center;
+		/* stessa altezza in vista desktop e mobile: la cornice più bassa resta centrata */
+		height: calc(var(--ph) + 26px);
 		touch-action: pan-y;
-		--ph: clamp(140px, calc(100svh - 430px), 460px);
+		--ph: clamp(140px, calc(100svh - 436px), 460px);
 	}
 	@media (min-width: 900px) {
 		.view {
-			--ph: clamp(300px, calc(100svh - 300px), 460px);
+			--ph: clamp(300px, calc(100svh - 380px), 420px);
 		}
 	}
+	/* la cornice desktop non supera mai l'altezza riservata alla vista */
 	.browser {
-		width: 100%;
+		width: min(100%, calc((var(--ph) - 32px) * 1.6));
 		border: 1px solid rgba(255, 255, 255, 0.18);
 		border-radius: 10px;
 		overflow: hidden;
@@ -367,18 +371,9 @@ const lenses = [
 	}
 	.vid {
 		position: absolute;
-		left: 0;
-		top: 0;
-		width: 66.6667%;
-		height: 100%;
 		object-fit: cover;
-		object-position: 50% 25%;
 		opacity: 0;
 		transition: opacity 0.6s;
-	}
-	.sm .vid {
-		width: 100%;
-		height: 66.6667%;
 	}
 	.vid.on {
 		opacity: 1;
@@ -628,10 +623,6 @@ const lenses = [
 		.view {
 			grid-area: view;
 			margin: 2px 0 10px;
-		}
-		/* la cornice desktop segue l'altezza disponibile come il telefono */
-		.browser {
-			width: min(100%, calc((var(--ph) - 32px) * 1.6));
 		}
 		.head {
 			grid-area: head;

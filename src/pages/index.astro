@@ -1,20 +1,17 @@
 ---
-import { Image } from 'astro:assets';
 import CaseStudy from '../components/CaseStudy.astro';
 import { passion } from '../data/passion';
+import { recomp } from '../data/recomp';
+import { kalan } from '../data/kalan';
+import { enjoy } from '../data/enjoy';
+import { body } from '../data/body';
+
+const cases = [passion, recomp, kalan, enjoy, body];
 import '@fontsource-variable/inter';
 import '@fontsource-variable/space-grotesk';
 import '@fontsource-variable/jetbrains-mono';
 import '../styles/global.css';
 
-import enjoyDesktop from '../assets/shots/enjoyclub-desktop.png';
-import enjoyMobile from '../assets/shots/enjoyclub-mobile.png';
-import recompDesktop from '../assets/shots/recomp360-desktop.png';
-import recompMobile from '../assets/shots/recomp360-mobile.png';
-import bodyDesktop from '../assets/shots/bodyenergie-desktop.png';
-import bodyMobile from '../assets/shots/bodyenergie-mobile.png';
-import kalanDesktop from '../assets/shots/kalan-desktop.png';
-import kalanMobile from '../assets/shots/kalan-mobile.png';
 
 const email = 'michele.orecchioni@outlook.com';
 const linkedin = 'https://linkedin.com/in/micheleorecchioni';
@@ -26,43 +23,6 @@ const stats = [
 	{ n: '30k€', l: 'budget mensile ads presidiato come referente' },
 ];
 
-const sites = [
-	{
-		name: 'Recomp360',
-		url: 'https://recomp360.it/',
-		desc: 'Sito di conversione per una palestra di personal training a Roma Est: l’obiettivo è trasformare le visite in prove a pagamento (Guest Pass da 17 €) e in contatti qualificati.',
-		points: [
-			'Migrazione da HTML statico con CMS ad Astro, con componenti riutilizzabili e base SEO uniforme.',
-			'Modale a 4 step per il Guest Pass con pagamento Stripe e verifica lato server prima di notificare il sistema interno.',
-			'Form contatti con logica condizionale (già iscritto o nuovo) e automazioni via webhook su n8n.',
-			'Tracciamento con Google Tag Manager e Consent Mode v2, dati strutturati Schema.org e header di sicurezza.',
-		],
-		tags: ['Astro', 'Netlify Functions', 'Stripe', 'n8n', 'GTM', 'CookieYes'],
-		desktop: recompDesktop,
-		mobile: recompMobile,
-	},
-	{
-		name: 'Kalan',
-		url: 'https://kalancentro.it/',
-		desc: 'Il primo centro di benessere integrale in Italia.',
-		desktop: kalanDesktop,
-		mobile: kalanMobile,
-	},
-	{
-		name: 'Enjoy Club',
-		url: 'https://enjoyclub.eu/',
-		desc: 'Wellness community con due sedi in Brianza (Meda e Camuzzago).',
-		desktop: enjoyDesktop,
-		mobile: enjoyMobile,
-	},
-	{
-		name: 'Body Energie',
-		url: 'https://www.bodyenergie.it/',
-		desc: 'Sito web collegato ai punti di raccolta contatti.',
-		desktop: bodyDesktop,
-		mobile: bodyMobile,
-	},
-];
 
 const flow = [
 	{ t: 'Sito', d: 'Astro o WordPress + Elementor, scelti in base al cliente' },
@@ -197,53 +157,7 @@ const certs = [
 					</header>
 
 					<div class="sites">
-						<CaseStudy data={passion} />
-						{
-							sites.map((s) => {
-								const inner = (
-									<>
-										<div class="shot">
-											{s.desktop ? (
-												<>
-													<Image class="d" src={s.desktop} alt={`${s.name}, versione desktop`} widths={[640, 960]} sizes="(min-width: 760px) 520px, 90vw" loading="lazy" />
-													<Image class="m" src={s.mobile} alt={`${s.name}, versione mobile`} widths={[200, 320]} sizes="120px" loading="lazy" />
-												</>
-											) : (
-												<div class="soon">Anteprima in arrivo</div>
-											)}
-										</div>
-										<div class="meta">
-											<h3>
-												{s.name}
-												{s.url && <span aria-hidden="true">↗</span>}
-											</h3>
-											<p>{s.desc}</p>
-											{s.points && (
-												<ul class="points">
-													{s.points.map((p) => (
-														<li>{p}</li>
-													))}
-												</ul>
-											)}
-											{s.tags && (
-												<ul class="tags">
-													{s.tags.map((t) => (
-														<li>{t}</li>
-													))}
-												</ul>
-											)}
-										</div>
-									</>
-								);
-								return s.url ? (
-									<a class="site reveal" href={s.url} target="_blank" rel="noopener noreferrer">
-										{inner}
-									</a>
-								) : (
-									<div class="site reveal disabled">{inner}</div>
-								);
-							})
-						}
+						{cases.map((c) => <CaseStudy data={c} />)}
 					</div>
 				</div>
 			</section>
@@ -1069,117 +983,15 @@ const certs = [
 		grid-template-columns: minmax(0, 1fr);
 		gap: clamp(28px, 5vw, 48px);
 	}
-	.site {
-		display: flex;
-		flex-direction: column;
-		text-decoration: none;
-		background: var(--card);
-		border: 1px solid var(--line);
-		border-radius: var(--radius);
-		overflow: hidden;
-		transition: transform 0.25s, border-color 0.25s, box-shadow 0.25s;
-	}
-	a.site:hover {
-		transform: translateY(-4px);
-		border-color: var(--accent);
-		box-shadow: 0 20px 50px -20px rgba(124, 108, 255, 0.5);
-	}
-	.site.disabled {
-		opacity: 0.7;
-	}
-	.shot {
-		position: relative;
-		aspect-ratio: 16 / 10;
-		background: #05060a;
-		overflow: hidden;
-	}
-	.shot :global(.d) {
-		width: 100%;
-		height: 100%;
-		object-fit: cover;
-		object-position: top;
-	}
-	.shot :global(.m) {
-		position: absolute;
-		right: 14px;
-		bottom: -18px;
-		width: 24%;
-		height: auto;
-		aspect-ratio: 390 / 844;
-		object-fit: cover;
-		object-position: top;
-		border: 3px solid #1b2030;
-		border-radius: 14px;
-		box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6);
-	}
-	.soon,
 	.placeholder {
 		display: grid;
 		place-items: center;
 		color: var(--muted);
 		font-size: 0.95rem;
-	}
-	.soon {
-		height: 100%;
-		background: repeating-linear-gradient(45deg, #0d1018, #0d1018 12px, #11141d 12px, #11141d 24px);
-	}
-	.placeholder {
 		margin-top: 32px;
 		min-height: 180px;
 		border: 1px dashed var(--line);
 		border-radius: var(--radius);
-	}
-	.meta {
-		padding: 20px 20px 22px;
-	}
-	.meta h3 {
-		font-size: 1.2rem;
-		display: flex;
-		justify-content: space-between;
-	}
-	.meta p {
-		color: var(--muted);
-		margin: 8px 0 0;
-		font-size: 0.95rem;
-	}
-
-	.points {
-		margin: 14px 0 0;
-		padding-left: 18px;
-		color: var(--muted);
-		font-size: 0.9rem;
-	}
-	.points li {
-		margin-bottom: 6px;
-	}
-	.tags {
-		list-style: none;
-		padding: 0;
-		margin: 14px 0 0;
-		display: flex;
-		flex-wrap: wrap;
-		gap: 6px;
-	}
-	.tags li {
-		font-size: 0.75rem;
-		padding: 4px 10px;
-		border: 1px solid var(--line);
-		border-radius: 999px;
-		color: var(--accent-2);
-	}
-	@media (min-width: 760px) {
-		.site {
-			display: grid;
-			grid-template-columns: 1fr 1fr;
-		}
-		.site .shot {
-			aspect-ratio: auto;
-			min-height: 300px;
-		}
-		.meta {
-			align-self: center;
-			padding: 32px;
-		}
 	}
 
 	.flow {
